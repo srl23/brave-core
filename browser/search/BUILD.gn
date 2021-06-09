@@ -10,8 +10,11 @@ source_set("search") {
     ]
 
     deps += [
+      "//base",
       "//brave/browser/profiles:profiles",
       "//brave/common:pref_names",
+      "//brave/components/crypto_dot_com/browser/buildflags",
+      "//brave/components/crypto_dot_com/common",
       "//chrome/common",
       "//components/pref_registry",
       "//components/prefs",

@@ -59,6 +59,9 @@ const char kNewTabPageShowRewards[] = "brave.new_tab_page.show_rewards";
 const char kNewTabPageShowBinance[] = "brave.new_tab_page.show_binance";
 const char kNewTabPageShowGemini[] = "brave.new_tab_page.show_gemini";
 const char kNewTabPageShowTogether[] = "brave.new_tab_page.show_together";
+const char kNewTabPageHideAllWidgets[] = "brave.new_tab_page.hide_all_widgets";
+const char kNewTabPageMigratedHideAllWidgetsPref[] =
+    "brave.new_tab_page.migrated_hide_all_widgets_pref";
 const char kNewTabPageShowsOptions[] = "brave.new_tab_page.shows_options";
 const char kBraveTodaySources[] = "brave.today.sources";
 const char kBraveTodayIntroDismissed[] = "brave.today.intro_dismissed";
