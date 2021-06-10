@@ -657,3 +657,21 @@ TEST_F(IpfsUtilsUnitTest, IsAPIGatewayTest) {
   ASSERT_FALSE(ipfs::IsAPIGateway(GURL("https://brave.com"), channel));
   ASSERT_FALSE(ipfs::IsAPIGateway(GURL(), channel));
 }
+
+TEST_F(IpfsUtilsUnitTest, ParseIPFSUri) {
+  GURL url("ipfs://bafy/path");
+  EXPECT_EQ(url.scheme(), "ipfs");
+  EXPECT_EQ(url.host(), "bafy");
+  EXPECT_EQ(url.path(), "/path");
+
+  url = GURL("ipns://bafy/path");
+  EXPECT_EQ(url.scheme(), "ipns");
+  EXPECT_EQ(url.host(), "bafy");
+  EXPECT_EQ(url.path(), "/path");
+
+  url = GURL("ipns://bafy/");
+  EXPECT_EQ(url.scheme(), "ipns");
+  EXPECT_EQ(url.host(), "bafy");
+  EXPECT_EQ(url.path(), "/");
+}
+
