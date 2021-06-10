@@ -62,22 +62,24 @@ class BatAdsRedeemUnblindedTokenTest : public UnitTestBase {
 
     confirmation.type = ConfirmationType::kViewed;
 
-    const privacy::UnblindedTokenInfo unblinded_token =
-        get_unblinded_tokens()->GetToken();
-    get_unblinded_tokens()->RemoveToken(unblinded_token);
-    confirmation.unblinded_token = unblinded_token;
+    if (!ConfirmationsState::Get()->get_unblinded_tokens()->IsEmpty()) {
+      const privacy::UnblindedTokenInfo unblinded_token =
+          get_unblinded_tokens()->GetToken();
+      get_unblinded_tokens()->RemoveToken(unblinded_token);
+      confirmation.unblinded_token = unblinded_token;
 
-    const std::string payment_token_base64 =
-        R"(aXZNwft34oG2JAVBnpYh/ktTOzr2gi0lKosYNczUUz6ZS9gaDTJmU2FHFps9dIq+QoDwjSjctR5v0rRn+dYo+AHScVqFAgJ5t2s4KtSyawW10gk6hfWPQw16Q0+8u5AG)";
-    confirmation.payment_token = Token::decode_base64(payment_token_base64);
+      const std::string payment_token_base64 =
+          R"(aXZNwft34oG2JAVBnpYh/ktTOzr2gi0lKosYNczUUz6ZS9gaDTJmU2FHFps9dIq+QoDwjSjctR5v0rRn+dYo+AHScVqFAgJ5t2s4KtSyawW10gk6hfWPQw16Q0+8u5AG)";
+      confirmation.payment_token = Token::decode_base64(payment_token_base64);
 
-    const std::string blinded_payment_token_base64 =
-        R"(Ev5JE4/9TZI/5TqyN9JWfJ1To0HBwQw2rWeAPcdjX3Q=)";
-    confirmation.blinded_payment_token =
-        BlindedToken::decode_base64(blinded_payment_token_base64);
+      const std::string blinded_payment_token_base64 =
+          R"(Ev5JE4/9TZI/5TqyN9JWfJ1To0HBwQw2rWeAPcdjX3Q=)";
+      confirmation.blinded_payment_token =
+          BlindedToken::decode_base64(blinded_payment_token_base64);
 
-    const std::string payload = CreateConfirmationRequestDTO(confirmation);
-    confirmation.credential = CreateCredential(unblinded_token, payload);
+      const std::string payload = CreateConfirmationRequestDTO(confirmation);
+      confirmation.credential = CreateCredential(unblinded_token, payload);
+    }
 
     confirmation.timestamp = 1587127747;
 
@@ -95,7 +97,7 @@ TEST_F(BatAdsRedeemUnblindedTokenTest, RedeemUnblindedToken) {
   // Arrange
   const URLEndpoints endpoints = {
       {// Create confirmation request
-       R"(/v1/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/eyJwYXlsb2FkIjoie1wiYmxpbmRlZFBheW1lbnRUb2tlblwiOlwiRXY1SkU0LzlUWkkvNVRxeU45SldmSjFUbzBIQndRdzJyV2VBUGNkalgzUT1cIixcImJ1aWxkQ2hhbm5lbFwiOlwidGVzdFwiLFwiY3JlYXRpdmVJbnN0YW5jZUlkXCI6XCI3MDgyOWQ3MS1jZTJlLTQ0ODMtYTRjMC1lMWUyYmVlOTY1MjBcIixcInBheWxvYWRcIjp7fSxcInBsYXRmb3JtXCI6XCJ0ZXN0XCIsXCJ0eXBlXCI6XCJ2aWV3XCJ9Iiwic2lnbmF0dXJlIjoiRkhiczQxY1h5eUF2SnkxUE9HVURyR1FoeUtjRkVMSXVJNU5yT3NzT2VLbUV6N1p5azZ5aDhweDQ0WmFpQjZFZkVRc0pWMEpQYmJmWjVUMGt2QmhEM0E9PSIsInQiOiJWV0tFZEliOG5Nd21UMWVMdE5MR3VmVmU2TlFCRS9TWGpCcHlsTFlUVk1KVFQrZk5ISTJWQmQyenRZcUlwRVdsZWF6TiswYk5jNGF2S2ZrY3YyRkw3Zz09In0=)",
+       R"(/v2/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/eyJwYXlsb2FkIjoie1wiYmxpbmRlZFBheW1lbnRUb2tlblwiOlwiRXY1SkU0LzlUWkkvNVRxeU45SldmSjFUbzBIQndRdzJyV2VBUGNkalgzUT1cIixcImJ1aWxkQ2hhbm5lbFwiOlwidGVzdFwiLFwiY3JlYXRpdmVJbnN0YW5jZUlkXCI6XCI3MDgyOWQ3MS1jZTJlLTQ0ODMtYTRjMC1lMWUyYmVlOTY1MjBcIixcInBheWxvYWRcIjp7fSxcInBsYXRmb3JtXCI6XCJ0ZXN0XCIsXCJ0eXBlXCI6XCJ2aWV3XCJ9Iiwic2lnbmF0dXJlIjoiRkhiczQxY1h5eUF2SnkxUE9HVURyR1FoeUtjRkVMSXVJNU5yT3NzT2VLbUV6N1p5azZ5aDhweDQ0WmFpQjZFZkVRc0pWMEpQYmJmWjVUMGt2QmhEM0E9PSIsInQiOiJWV0tFZEliOG5Nd21UMWVMdE5MR3VmVmU2TlFCRS9TWGpCcHlsTFlUVk1KVFQrZk5ISTJWQmQyenRZcUlwRVdsZWF6TiswYk5jNGF2S2ZrY3YyRkw3Zz09In0=)",
        {{net::HTTP_CREATED, R"(
             {
               "id" : "9fd71bc4-1b8e-4c1e-8ddc-443193a09f91",
@@ -107,7 +109,7 @@ TEST_F(BatAdsRedeemUnblindedTokenTest, RedeemUnblindedToken) {
             }
           )"}}},
       {// Fetch payment token request
-       R"(/v1/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/paymentToken)",
+       R"(/v2/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/paymentToken)",
        {{net::HTTP_OK, R"(
             {
               "id" : "9fd71bc4-1b8e-4c1e-8ddc-443193a09f91",
@@ -152,7 +154,7 @@ TEST_F(BatAdsRedeemUnblindedTokenTest, RetryRedeemingUnblindedToken) {
   // Arrange
   const URLEndpoints endpoints = {
       {// Fetch payment token request
-       R"(/v1/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/paymentToken)",
+       R"(/v2/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/paymentToken)",
        {{net::HTTP_OK, R"(
             {
               "id" : "9fd71bc4-1b8e-4c1e-8ddc-443193a09f91",
@@ -199,10 +201,10 @@ TEST_F(
   // Arrange
   const URLEndpoints endpoints = {
       {// Create confirmation request
-       R"(/v1/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/eyJwYXlsb2FkIjoie1wiYmxpbmRlZFBheW1lbnRUb2tlblwiOlwiRXY1SkU0LzlUWkkvNVRxeU45SldmSjFUbzBIQndRdzJyV2VBUGNkalgzUT1cIixcImJ1aWxkQ2hhbm5lbFwiOlwidGVzdFwiLFwiY3JlYXRpdmVJbnN0YW5jZUlkXCI6XCI3MDgyOWQ3MS1jZTJlLTQ0ODMtYTRjMC1lMWUyYmVlOTY1MjBcIixcInBheWxvYWRcIjp7fSxcInBsYXRmb3JtXCI6XCJ0ZXN0XCIsXCJ0eXBlXCI6XCJ2aWV3XCJ9Iiwic2lnbmF0dXJlIjoiRkhiczQxY1h5eUF2SnkxUE9HVURyR1FoeUtjRkVMSXVJNU5yT3NzT2VLbUV6N1p5azZ5aDhweDQ0WmFpQjZFZkVRc0pWMEpQYmJmWjVUMGt2QmhEM0E9PSIsInQiOiJWV0tFZEliOG5Nd21UMWVMdE5MR3VmVmU2TlFCRS9TWGpCcHlsTFlUVk1KVFQrZk5ISTJWQmQyenRZcUlwRVdsZWF6TiswYk5jNGF2S2ZrY3YyRkw3Zz09In0=)",
+       R"(/v2/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/eyJwYXlsb2FkIjoie1wiYmxpbmRlZFBheW1lbnRUb2tlblwiOlwiRXY1SkU0LzlUWkkvNVRxeU45SldmSjFUbzBIQndRdzJyV2VBUGNkalgzUT1cIixcImJ1aWxkQ2hhbm5lbFwiOlwidGVzdFwiLFwiY3JlYXRpdmVJbnN0YW5jZUlkXCI6XCI3MDgyOWQ3MS1jZTJlLTQ0ODMtYTRjMC1lMWUyYmVlOTY1MjBcIixcInBheWxvYWRcIjp7fSxcInBsYXRmb3JtXCI6XCJ0ZXN0XCIsXCJ0eXBlXCI6XCJ2aWV3XCJ9Iiwic2lnbmF0dXJlIjoiRkhiczQxY1h5eUF2SnkxUE9HVURyR1FoeUtjRkVMSXVJNU5yT3NzT2VLbUV6N1p5azZ5aDhweDQ0WmFpQjZFZkVRc0pWMEpQYmJmWjVUMGt2QmhEM0E9PSIsInQiOiJWV0tFZEliOG5Nd21UMWVMdE5MR3VmVmU2TlFCRS9TWGpCcHlsTFlUVk1KVFQrZk5ISTJWQmQyenRZcUlwRVdsZWF6TiswYk5jNGF2S2ZrY3YyRkw3Zz09In0=)",
        {{net::HTTP_BAD_REQUEST, ""}}},
       {// Fetch payment token request
-       R"(/v1/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/paymentToken)",
+       R"(/v2/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/paymentToken)",
        {{net::HTTP_NOT_FOUND, ""}}}};
 
   MockUrlRequest(ads_client_mock_, endpoints);
@@ -234,10 +236,10 @@ TEST_F(
   // Arrange
   const URLEndpoints endpoints = {
       {// Create confirmation request
-       R"(/v1/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/eyJwYXlsb2FkIjoie1wiYmxpbmRlZFBheW1lbnRUb2tlblwiOlwiRXY1SkU0LzlUWkkvNVRxeU45SldmSjFUbzBIQndRdzJyV2VBUGNkalgzUT1cIixcImJ1aWxkQ2hhbm5lbFwiOlwidGVzdFwiLFwiY3JlYXRpdmVJbnN0YW5jZUlkXCI6XCI3MDgyOWQ3MS1jZTJlLTQ0ODMtYTRjMC1lMWUyYmVlOTY1MjBcIixcInBheWxvYWRcIjp7fSxcInBsYXRmb3JtXCI6XCJ0ZXN0XCIsXCJ0eXBlXCI6XCJ2aWV3XCJ9Iiwic2lnbmF0dXJlIjoiRkhiczQxY1h5eUF2SnkxUE9HVURyR1FoeUtjRkVMSXVJNU5yT3NzT2VLbUV6N1p5azZ5aDhweDQ0WmFpQjZFZkVRc0pWMEpQYmJmWjVUMGt2QmhEM0E9PSIsInQiOiJWV0tFZEliOG5Nd21UMWVMdE5MR3VmVmU2TlFCRS9TWGpCcHlsTFlUVk1KVFQrZk5ISTJWQmQyenRZcUlwRVdsZWF6TiswYk5jNGF2S2ZrY3YyRkw3Zz09In0=)",
+       R"(/v2/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/eyJwYXlsb2FkIjoie1wiYmxpbmRlZFBheW1lbnRUb2tlblwiOlwiRXY1SkU0LzlUWkkvNVRxeU45SldmSjFUbzBIQndRdzJyV2VBUGNkalgzUT1cIixcImJ1aWxkQ2hhbm5lbFwiOlwidGVzdFwiLFwiY3JlYXRpdmVJbnN0YW5jZUlkXCI6XCI3MDgyOWQ3MS1jZTJlLTQ0ODMtYTRjMC1lMWUyYmVlOTY1MjBcIixcInBheWxvYWRcIjp7fSxcInBsYXRmb3JtXCI6XCJ0ZXN0XCIsXCJ0eXBlXCI6XCJ2aWV3XCJ9Iiwic2lnbmF0dXJlIjoiRkhiczQxY1h5eUF2SnkxUE9HVURyR1FoeUtjRkVMSXVJNU5yT3NzT2VLbUV6N1p5azZ5aDhweDQ0WmFpQjZFZkVRc0pWMEpQYmJmWjVUMGt2QmhEM0E9PSIsInQiOiJWV0tFZEliOG5Nd21UMWVMdE5MR3VmVmU2TlFCRS9TWGpCcHlsTFlUVk1KVFQrZk5ISTJWQmQyenRZcUlwRVdsZWF6TiswYk5jNGF2S2ZrY3YyRkw3Zz09In0=)",
        {{net::HTTP_OK, ""}}},
       {// Fetch payment token request
-       R"(/v1/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/paymentToken)",
+       R"(/v2/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91/paymentToken)",
        {{net::HTTP_INTERNAL_SERVER_ERROR, ""}}}};
 
   MockUrlRequest(ads_client_mock_, endpoints);
@@ -256,6 +258,38 @@ TEST_F(
 
   EXPECT_CALL(*redeem_unblinded_token_delegate_mock_,
               OnFailedToRedeemUnblindedToken(expected_confirmation, true))
+      .Times(1);
+
+  redeem_unblinded_token_->Redeem(confirmation);
+
+  // Assert
+}
+
+TEST_F(BatAdsRedeemUnblindedTokenTest, RedeemUnblindedTokenIfAdsIsDisabled) {
+  // Arrange
+  const URLEndpoints endpoints = {
+      {// Create confirmation request
+       "/v2/confirmation/9fd71bc4-1b8e-4c1e-8ddc-443193a09f91",
+       {{418 /* I'm a teapot */, R"(
+            {
+              "id" : "9fd71bc4-1b8e-4c1e-8ddc-443193a09f91",
+              "payload" : {},
+              "createdAt" : "2020-04-20T10:27:11.717Z",
+              "type" : "view",
+              "modifiedAt" : "2020-04-20T10:27:11.717Z",
+              "creativeInstanceId" : "70829d71-ce2e-4483-a4c0-e1e2bee96520"
+            }
+          )"}}}};
+
+  MockUrlRequest(ads_client_mock_, endpoints);
+
+  const ConfirmationInfo confirmation = GetConfirmationInfo();
+
+  // Act
+  ConfirmationInfo expected_confirmation = confirmation;
+
+  EXPECT_CALL(*redeem_unblinded_token_delegate_mock_,
+              OnDidSendConfirmation(expected_confirmation))
       .Times(1);
 
   redeem_unblinded_token_->Redeem(confirmation);

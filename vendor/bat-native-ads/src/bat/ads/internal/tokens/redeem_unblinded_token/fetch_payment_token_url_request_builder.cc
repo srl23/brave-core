@@ -21,7 +21,7 @@ FetchPaymentTokenUrlRequestBuilder::FetchPaymentTokenUrlRequestBuilder(
 FetchPaymentTokenUrlRequestBuilder::~FetchPaymentTokenUrlRequestBuilder() =
     default;
 
-// GET /v1/confirmation/{confirmation_id}/paymentToken
+// GET /v2/confirmation/{confirmation_id}/paymentToken
 
 UrlRequestPtr FetchPaymentTokenUrlRequestBuilder::Build() {
   UrlRequestPtr url_request = UrlRequest::New();
@@ -34,7 +34,7 @@ UrlRequestPtr FetchPaymentTokenUrlRequestBuilder::Build() {
 ///////////////////////////////////////////////////////////////////////////////
 
 std::string FetchPaymentTokenUrlRequestBuilder::BuildUrl() const {
-  return base::StringPrintf("%s/v1/confirmation/%s/paymentToken",
+  return base::StringPrintf("%s/v2/confirmation/%s/paymentToken",
                             confirmations::server::GetHost().c_str(),
                             confirmation_.id.c_str());
 }

@@ -62,7 +62,7 @@ void RedeemUnblindedToken::Redeem(const ConfirmationInfo& confirmation) {
 void RedeemUnblindedToken::CreateConfirmation(
     const ConfirmationInfo& confirmation) {
   BLOG(1, "CreateConfirmation");
-  BLOG(2, "POST /v1/confirmation/{confirmation_id}/{credential}");
+  BLOG(2, "POST /v2/confirmation/{confirmation_id}/{credential}");
 
   CreateConfirmationUrlRequestBuilder url_request_builder(confirmation);
   UrlRequestPtr url_request = url_request_builder.Build();
@@ -91,6 +91,14 @@ void RedeemUnblindedToken::OnCreateConfirmation(
     BLOG(1, "Duplicate/bad confirmation");
   }
 
+  if (url_response.status_code == 418) {  // I'm a teapot
+    if (delegate_) {
+      delegate_->OnDidSendConfirmation(confirmation);
+    }
+
+    return;
+  }
+
   ConfirmationInfo new_confirmation = confirmation;
   new_confirmation.created = true;
 
@@ -102,7 +110,7 @@ void RedeemUnblindedToken::FetchPaymentToken(
   DCHECK(!confirmation.id.empty());
 
   BLOG(1, "FetchPaymentToken");
-  BLOG(2, "GET /v1/confirmation/{confirmation_id}/paymentToken");
+  BLOG(2, "GET /v2/confirmation/{confirmation_id}/paymentToken");
 
   FetchPaymentTokenUrlRequestBuilder url_request_builder(confirmation);
   UrlRequestPtr url_request = url_request_builder.Build();
