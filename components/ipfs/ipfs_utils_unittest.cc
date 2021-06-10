@@ -269,7 +269,7 @@ TEST_F(IpfsUtilsUnitTest, TranslateIPFSURIIPFSScheme) {
   GURL new_url;
   ASSERT_TRUE(ipfs::TranslateIPFSURI(url, &new_url, public_gateway(), false));
   EXPECT_EQ(new_url, GURL("https://dweb.link/ipfs/"
-                          "QmfM2r8seH2GiRaC4esTjeraXEachRt8ZsSeGaWTPLyMoG"));
+                          "QmfM2r8seH2GiRaC4esTjeraXEachRt8ZsSeGaWTPLyMoG/"));
 }
 
 TEST_F(IpfsUtilsUnitTest, TranslateIPFSURIIPNSScheme) {
@@ -673,5 +673,9 @@ TEST_F(IpfsUtilsUnitTest, ParseIPFSUri) {
   EXPECT_EQ(url.scheme(), "ipns");
   EXPECT_EQ(url.host(), "bafy");
   EXPECT_EQ(url.path(), "/");
-}
 
+  url = GURL("ipfs://QmfM2r8seH2GiRaC4esTjeraXEachRt8ZsSeGaWTPLyMoG/path");
+  EXPECT_EQ(url.scheme(), "ipfs");
+  EXPECT_EQ(url.host(), "QmfM2r8seH2GiRaC4esTjeraXEachRt8ZsSeGaWTPLyMoG");
+  EXPECT_EQ(url.path(), "/path");
+}

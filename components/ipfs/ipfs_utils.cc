@@ -291,9 +291,8 @@ bool TranslateIPFSURI(const GURL& url,
                       GURL* new_url,
                       const GURL& gateway_url,
                       bool use_subdomain) {
-  std::string cid, path;
-  if (!ParseCIDAndPathFromIPFSUrl(url, &cid, &path))
-    return false;
+  std::string cid = url.host();
+  std::string path = url.path();
   bool ipfs_scheme = url.scheme() == kIPFSScheme;
   bool ipns_scheme = url.scheme() == kIPNSScheme;
   if ((ipfs_scheme && std::all_of(cid.begin(), cid.end(),
